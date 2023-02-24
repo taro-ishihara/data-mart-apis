@@ -10,7 +10,17 @@ Description: >-
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform:
-- AWS::Serverless-2016-10-31
+  - AWS::Serverless-2016-10-31
+  - Name: DatadogServerless
+    Parameters:
+      stackName: !Ref "AWS::StackName"
+      forwarderArn: !ImportValue: "datadog-forwarder-ForwarderArn"
+      apiKeySecretArn: !ImportValue: "datadog-forwarder-ApiKeySecretArn"
+      addLayers: true
+      nodeLayerVersion: 87
+      flushMetricsToLogs: true
+      enableEnhancedMetrics: true
+      enableXrayTracing: true
 
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
@@ -29,6 +39,7 @@ Resources:
   getAllItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: GetAllItemsFunction
       Handler: src/handlers/get-all-items.getAllItemsHandler
       Runtime: nodejs18.x
       Architectures:
@@ -40,6 +51,8 @@ Resources:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
@@ -57,6 +70,7 @@ Resources:
   getByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: GetByIdFunction
       Handler: src/handlers/get-by-id.getByIdHandler
       Runtime: nodejs18.x
       Architectures:
@@ -68,6 +82,8 @@ Resources:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
@@ -85,6 +101,7 @@ Resources:
   putItemFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: PutItemFunction
       Handler: src/handlers/put-item.putItemHandler
       Runtime: nodejs18.x
       Architectures:
@@ -96,6 +113,8 @@ Resources:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
