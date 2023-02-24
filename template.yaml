@@ -14,8 +14,8 @@ Transform:
   - Name: DatadogServerless
     Parameters:
       stackName: !Ref "AWS::StackName"
-      forwarderArn: !ImportValue: "datadog-forwarder-ForwarderArn"
-      apiKeySecretArn: !ImportValue: "datadog-forwarder-ApiKeySecretArn"
+      forwarderArn: "arn:aws:lambda:us-west-1:044107946839:function:datadog-forwarder-Forwarder-ffJLiHLCk11F"
+      apiKeySecretArn: "arn:aws:secretsmanager:us-west-1:044107946839:secret:DdApiKeySecret-CErgym7q9fSY-l67e4y"
       addLayers: true
       nodeLayerVersion: 87
       flushMetricsToLogs: true
@@ -52,7 +52,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
+            SecretArn: !ImportValue datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
@@ -83,7 +83,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
+            SecretArn: !ImportValue datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
@@ -114,7 +114,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: !ImportValue: datadog-forwarder-ApiKeySecretArn
+            SecretArn: !ImportValue datadog-forwarder-ApiKeySecretArn
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
