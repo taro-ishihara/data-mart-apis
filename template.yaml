@@ -30,6 +30,8 @@ Globals:
     Tracing: Active
   Api:
     TracingEnabled: True
+    AccessLogSetting: 
+      DestinationArn: "arn:aws:firehose:us-west-1:044107946839:deliverystream/amazon-apigateway-api-logs-to-moesif"
 
 Resources:
   # Each Lambda function is defined by properties:
